@@ -1,19 +1,16 @@
 const fs = require('fs');
-
-// Function to read JSON input from file
 function readInput(file) {
     return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
-// Step 1: Parse JSON data and extract points
 function extractPoints(data) {
-    const n = data.keys.n; // Number of points
+    const n = data.keys.n; 
     const points = [];
 
     for (let i = 1; i <= n; i++) {
         if (data[i]) {
             const base = parseInt(data[i].base);
-            const yValue = parseInt(data[i].value, base); // Decode y value based on the base
+            const yValue = parseInt(data[i].value, base); 
             points.push({ x: i, y: yValue });
         }
     }
@@ -21,7 +18,6 @@ function extractPoints(data) {
     return points;
 }
 
-// Step 2: Perform Lagrange Interpolation to find constant term 'c'
 function lagrangeInterpolation(points, xValue) {
     let result = 0;
 
@@ -37,8 +33,6 @@ function lagrangeInterpolation(points, xValue) {
 
     return result;
 }
-
-// Step 3: Find wrong points (those that do not lie on the curve)
 function findWrongPoints(points, expectedSecret) {
     const wrongPoints = [];
     points.forEach(point => {
@@ -50,25 +44,20 @@ function findWrongPoints(points, expectedSecret) {
     return wrongPoints;
 }
 
-// Step 4: Execute the logic for the test cases
 function processTestCase(file) {
-    const data = readInput(file);  // Read the test case JSON file
-    const points = extractPoints(data); // Extract and decode points
+    const data = readInput(file);  
+    const points = extractPoints(data); 
 
     console.log(`Decoded points for ${file}:`, points);
 
-    const secret = lagrangeInterpolation(points, 0);  // Find the constant term 'c'
+    const secret = lagrangeInterpolation(points, 0);  
     console.log(`Secret (constant term c) for ${file}: ${Math.round(secret)}`);
 
-    // If it's the second test case, check for wrong points
     if (file === 'testcase2.json') {
         const wrongPoints = findWrongPoints(points, secret);
         console.log(`Wrong points in ${file}:`, wrongPoints);
     }
 }
 
-// Process the first test case
 processTestCase('testcase1.json');
-
-// Process the second test case
 processTestCase('testcase2.json');
